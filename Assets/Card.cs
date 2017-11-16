@@ -3,28 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum CardState {
-	DrawPile,
-	ToHand,
-	Hand,
-	ToTarget,
-	Target,
-	Discarded,
-	To,
-	Idle
+	NONE
 }
 
 public class Card : MonoBehaviour {
+	public float speed;
+
 	Sprite cardSprite;
 	Sprite cardbackSprite;
 	string suit;
 
-	[HideInInspector]
-	public int rank; // From 0 (which is a 2) upwards to Ace
+	Vector3 startLerpPos;
+	Quaternion startLerpRot;
 
-	[HideInInspector]
-	public List<Card> coveredBy = new List<Card> ();
+	Vector3 endLerpPos;
+	Quaternion endLerpRot;
 
-	public CardState state = CardState.Table;
+	float lerp;
+
+	public CardState state = CardState.NONE;
 
 	[HideInInspector]
 	public bool faceUp = false;
@@ -33,32 +30,32 @@ public class Card : MonoBehaviour {
 		cardbackSprite = GetComponent<SpriteRenderer> ().sprite;
 	}
 
-	public void Flip() {
-		faceUp = !faceUp;
-		var s = GetComponent<SpriteRenderer> ();
-		if (faceUp) {
+	public void MoveTo(Vector3 pos, Quaternion rot) {
+		endLerpPos = pos;
+		endLerpRot = rot;
+		lerp = 0;
+	}
+
+	public void FlipUp() {
+		if (!faceUp) {
+			faceUp = true;
+			var s = GetComponent<SpriteRenderer> ();
 			s.sprite = cardSprite;
-		} else {
-			s.sprite = cardbackSprite;
 		}
 	}
 
 	public void SetCard(int rank, string suit) {
-		this.rank = rank;
-		this.suit = suit;
-		cardSprite = Deck.deck.getCardSprite (rank, suit);
+		cardSprite = Deck.deck.GetCardSprite (rank, suit);
 	}
 	
-	// Update is called once per frame
 	void Update () {
-		int covered = coveredBy.Count;
-		foreach (var c in coveredBy) {
-			if (c.state != CardState.Table) {
-				covered--;
+		if (lerp >= 0.0f) {
+			transform.position = Vector3.Lerp (startLerpPos, endLerpPos, lerp);
+			transform.localRotation = Quaternion.Slerp (startLerpRot, endLerpRot, lerp);
+			lerp += speed * Time.deltaTime;
+			if (lerp >= 1.0f) {
+				lerp = -1.0f;
 			}
-		}
-		if (!faceUp && covered == 0 && state == CardState.Table) {
-			Flip ();
 		}
 	}
 }

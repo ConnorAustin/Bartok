@@ -20,10 +20,10 @@ public class Deck : MonoBehaviour {
 	void Start() {
 		cards = CreateDeck ();
 		Shuffle ();
-		GetComponent<Prospector> ().DeckReady ();
+		SendMessage ("DeckReady");
 	}
 
-	Sprite loadCardSprite(string suit, string value) {
+	Sprite LoadCardSprite(string suit, string value) {
 		return Resources.Load<Sprite> ("Sprites/card" + suit + value);
 	}
 
@@ -31,12 +31,12 @@ public class Deck : MonoBehaviour {
 		List<Sprite> sprites = new List<Sprite> ();
 
 		for(int i = 2; i < 11; i++) {
-			sprites.Add(loadCardSprite(suit, i.ToString()));
+			sprites.Add(LoadCardSprite(suit, i.ToString()));
 		}
-		sprites.Add(loadCardSprite(suit, "J"));
-		sprites.Add(loadCardSprite(suit, "Q"));
-		sprites.Add(loadCardSprite(suit, "K"));
-		sprites.Add(loadCardSprite(suit, "A"));
+		sprites.Add(LoadCardSprite(suit, "J"));
+		sprites.Add(LoadCardSprite(suit, "Q"));
+		sprites.Add(LoadCardSprite(suit, "K"));
+		sprites.Add(LoadCardSprite(suit, "A"));
 		return sprites;
 	}
 
@@ -47,11 +47,11 @@ public class Deck : MonoBehaviour {
 		cardSprites.Add("Diamonds", LoadCardSuit ("Diamonds"));
 	}
 
-	public Sprite getCardSprite (int rank, string suit) {
+	public Sprite GetCardSprite (int rank, string suit) {
 		return cardSprites [suit] [rank];
 	}
 
-	Card createCard(int rank, string suit) {
+	Card CreateCard(int rank, string suit) {
 		Card c = GameObject.Instantiate (cardPrefab).GetComponent<Card>();
 		c.SetCard (rank, suit);
 		return c;
@@ -60,7 +60,7 @@ public class Deck : MonoBehaviour {
 	List<Card> CreateSuit(string suit) {
 		var result = new List<Card> ();
 		for(int i = 0; i < 13; i++) {
-			result.Add(createCard(i, suit));
+			result.Add(CreateCard(i, suit));
 		}
 		return result;
 	}
