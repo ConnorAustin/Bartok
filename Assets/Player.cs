@@ -50,11 +50,8 @@ public class Player : MonoBehaviour {
 
 			Vector3 cardPos = 3.0f * Mathf.Cos(angle) * transform.right + 1.0f * Mathf.Sin (angle) * transform.up;
             var q = Quaternion.Euler(0, 0, cardAngleStep * i + -cardAngle / 2.0f + Vector3.Angle(transform.up, Vector3.up));
-            hand[i].MoveTo (transform.position + cardPos * 3, q, 1.0f);
+            hand [i].MoveTo (transform.position + cardPos * 3 + Vector3.forward * i * 0.1f, q, 1.0f);
             hand [i].SetDepth(-i);
-
-			if(count == 6)
-				Debug.DrawLine (transform.position, transform.position + cardPos, Color.red, 200.0f);
 		}
 	}
 }

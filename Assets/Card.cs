@@ -20,7 +20,7 @@ public class Card : MonoBehaviour {
 	Vector3 endLerpPos;
 	Quaternion endLerpRot;
 
-	float lerp;
+	float lerp = -1.0f;
 
 	public CardState state = CardState.NONE;
 
@@ -45,26 +45,24 @@ public class Card : MonoBehaviour {
     }
 
 	public void FlipUp() {
-		if (!faceUp) {
-			faceUp = true;
-			var s = GetComponent<SpriteRenderer> ();
-			s.sprite = cardSprite;
-		}
-	}
+		faceUp = true;
+        GetComponent<SpriteRenderer>().sprite = cardSprite;
+    }
 
 	public void SetCard(int rank, string suit) {
 		cardSprite = Deck.deck.GetCardSprite (rank, suit);
 	}
 	
 	void Update () {
-		if (lerp >= 0.0f) {
-			transform.position = Vector3.Lerp (startLerpPos, endLerpPos, Mathf.SmoothStep(0, 1, lerp));
+        if (lerp >= 0.0f) {
+            lerp += speed * Time.deltaTime;
+
+            transform.position = Vector3.Lerp (startLerpPos, endLerpPos, Mathf.SmoothStep(0, 1, lerp));
     
 			transform.localRotation = Quaternion.Slerp (startLerpRot, endLerpRot, lerp);
-			lerp += speed * Time.deltaTime;
 			if (lerp >= 1.0f) {
 				lerp = -1.0f;
 			}
-		}
-	}
+        }
+    }
 }
