@@ -32,8 +32,12 @@ public class Player : MonoBehaviour {
         if (count == 0)
             return;
 
-		float angleIncrease = 0.1f;
-        float angleRange = angleIncrease * count;
+        float cardSquish = 1.0f;
+        if(count > 7)
+        {
+            cardSquish = 1 + (count - 7) / 10.0f;
+        }
+        float angleRange = count * 0.1f / cardSquish;
         float angleStep = angleRange / (float)count;
 
         float baseAngle = -angleRange / 2.0f + Mathf.PI / 2.0f;
