@@ -12,15 +12,20 @@ public class Bartok : MonoBehaviour {
 	void Start () {
 		
 	}
-	
-	void Update () {
-		
-	}
+    int xx = 0; int y = 0;
+
+    void Update () {
+        var cards = Deck.deck.cards;
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            players[y].AddCard(cards[xx]);
+            y++;
+            y %= 4;
+            xx++;
+        }
+    }
 
 	public void DeckReady() {
-		var cards = Deck.deck.cards;
-		for (int i = 0; i < 6; i++) {
-			players [0].AddCard (cards [i]);
-		}
+		
 	}
 }

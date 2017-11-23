@@ -7,7 +7,8 @@ public enum CardState {
 }
 
 public class Card : MonoBehaviour {
-	public float speed;
+    public float baseSpeed;
+    float speed;
 
 	Sprite cardSprite;
 	Sprite cardbackSprite;
@@ -30,11 +31,18 @@ public class Card : MonoBehaviour {
 		cardbackSprite = GetComponent<SpriteRenderer> ().sprite;
 	}
 
-	public void MoveTo(Vector3 pos, Quaternion rot) {
+	public void MoveTo(Vector3 pos, Quaternion rot, float speed) {
 		endLerpPos = pos;
 		endLerpRot = rot;
+        startLerpPos = transform.position;
+        startLerpRot = transform.rotation;
 		lerp = 0;
+        this.speed = baseSpeed * speed;
 	}
+
+    public void SetDepth(int depth) {
+        GetComponent<SpriteRenderer>().sortingOrder = depth;
+    }
 
 	public void FlipUp() {
 		if (!faceUp) {
@@ -50,7 +58,8 @@ public class Card : MonoBehaviour {
 	
 	void Update () {
 		if (lerp >= 0.0f) {
-			transform.position = Vector3.Lerp (startLerpPos, endLerpPos, lerp);
+			transform.position = Vector3.Lerp (startLerpPos, endLerpPos, Mathf.SmoothStep(0, 1, lerp));
+    
 			transform.localRotation = Quaternion.Slerp (startLerpRot, endLerpRot, lerp);
 			lerp += speed * Time.deltaTime;
 			if (lerp >= 1.0f) {

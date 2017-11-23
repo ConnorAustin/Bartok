@@ -20,7 +20,7 @@ public class Player : MonoBehaviour {
 	}
 
 	public void AddCard(Card c) {
-		hand.Add (c);
+		hand.Insert (0, c);
 		FanHand ();
 		if (type == PlayerType.player) {
 			c.FlipUp ();
@@ -29,19 +29,28 @@ public class Player : MonoBehaviour {
 
 	public void FanHand() {
 		int count = hand.Count;
+        if (count == 0)
+            return;
 
-		float angleStep = 0.4f;
+		float angleIncrease = 0.1f;
+        float angleRange = angleIncrease * count;
+        float angleStep = angleRange / (float)count;
 
-		float baseAngle = Mathf.PI / 2.0f + Vector3.Angle (transform.up, Vector3.up);
+        float baseAngle = -angleRange / 2.0f + Mathf.PI / 2.0f;
+
+        float cardAngle = 2.0f * count;
+        float cardAngleStep = cardAngle / (float)count;
 
 		for(int i = 0; i < count; i++) {
-			float angle = baseAngle + -1 * (i % 2) * i * angleStep;
-			Vector3 cardLook = new Vector3 (Mathf.Cos (angle), Mathf.Sin (angle), 0);
+            float angle = baseAngle + angleStep * i;
 
-			var q = Quaternion.LookRotation(Vector3.forward, new Vector3(cardLook.x, cardLook.z, 0));
-			hand [i].MoveTo (transform.position + cardLook * 3, q);
+			Vector3 cardPos = 3.0f * Mathf.Cos(angle) * transform.right + 1.0f * Mathf.Sin (angle) * transform.up;
+            var q = Quaternion.Euler(0, 0, cardAngleStep * i + -cardAngle / 2.0f + Vector3.Angle(transform.up, Vector3.up));
+            hand[i].MoveTo (transform.position + cardPos * 3, q, 1.0f);
+            hand [i].SetDepth(-i);
+
 			if(count == 6)
-				Debug.DrawLine (transform.position, transform.position + cardLook, Color.red, 200.0f);
+				Debug.DrawLine (transform.position, transform.position + cardPos, Color.red, 200.0f);
 		}
 	}
 }
