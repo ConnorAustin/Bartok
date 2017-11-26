@@ -19,7 +19,7 @@ public class Deck : MonoBehaviour {
 
 	void Start() {
 		cards = CreateDeck ();
-		Shuffle ();
+		Shuffle (ref cards);
 		SendMessage ("DeckReady");
 	}
 
@@ -74,15 +74,15 @@ public class Deck : MonoBehaviour {
 		return result;
 	}
 
-	void Shuffle() {
+	public void Shuffle(ref List<Card> cardsToShuffle) {
 		var newCards = new List<Card> ();
-		while (cards.Count != 0) {
-			int randomIndex = Random.Range (0, cards.Count);
-			newCards.Add(cards[randomIndex]);
-			cards.RemoveAt (randomIndex);
+		while (cardsToShuffle.Count != 0) {
+			int randomIndex = Random.Range (0, cardsToShuffle.Count);
+			newCards.Add(cardsToShuffle[randomIndex]);
+            cardsToShuffle.RemoveAt (randomIndex);
 		}
-		cards = newCards;
-	}
+        cardsToShuffle = newCards;
+    }
 	
 	void Update () {
 		
