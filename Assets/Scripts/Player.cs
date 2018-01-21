@@ -23,7 +23,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if (!myturn || type == PlayerType.bot || Bartok.manager.state != GameState.Playing)
+        if (!myTurn || type == PlayerType.bot || Bartok.manager.state != GameState.Playing)
         {
             return;
         }
